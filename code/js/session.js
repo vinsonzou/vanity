@@ -1,78 +1,30 @@
 var gate = 'http://gate.weiyouba.cn:1996/c/sign/signin'
 var host = 'ws://s1.weiyouba.cn:1999/s';
 var timeout = 3000;
-session = function()
+function session()
 {
+  var thiz = this;
   this.sock = null;
-  this.eventid = 0;
-  this.pingtimer = 0;
-  this.id = 0;
-  this.opponentid = 0;
+  this.eventId = 0;
+  this.pingTimer = 0;
   this.fire = function(event, args)
   {
+    if(this.sock == null)
+      return;
     var o =
     {
-      id: ++this.eventid,
+      id: ++this.eventId,
       event: event
     };
     if(args != null)
       o.args = args;
     this.sock.send(JSON.stringify(o));
   };
-  this.ping = function(s)
+  this.ping = function()
   {
-    return function()
-    {
-      s.fire('ping');
-    };
+    thiz.fire('ping');
   };
-  this.connected = function(s, sid)
-  {
-    return function()
-    {
-      console.log('open');
-      s.fire('signin',
-        {
-          sid: sid
-        });
-      s.pingtimer = setInterval(s.ping(s), 2000);
-    };
-  };
-  this.disconnected = function(s)
-  {
-    return function()
-    {
-      if(s.pingtimer != 0)
-        clearInterval(s.pingtimer);
-      if(s.sock != null)
-      {
-        s.sock.close();
-        console.log('closed');
-        s.sock = null;
-      }
-    };
-  };
-  this.start = function(sid)
-  {
-    if(this.sock != null)
-      throw 'open';
-    this.sock = new WebSocket(host);
-    this.sock.onopen = this.connected(this, sid);
-    this.sock.onerror = function(error)
-    {
-      throw JSON.stringify(error);
-    };
-    this.sock.onmessage = function(e)
-    {
-      console.log(e.data);
-    };
-    this.sock.onclose = this.disconnected(this);
-  };
-  this.close = function()
-  {
-    this.disconnected(this)();
-  };
-  this.signin = function(s, name, pass)
+  this.connect = function(name, pass)
   {
     $.ajax({
       type: 'POST',
@@ -82,7 +34,33 @@ session = function()
       success: function(result)
       {
         console.log(JSON.stringify(result));
-        s.start(result.sid.value);
+        var sid = result.sid.value
+        if(thiz.sock != null)
+          throw 'open';
+        thiz.sock = new WebSocket(host);
+        thiz.sock.onopen = function()
+        {
+          console.log('open');
+          thiz.fire('signin',
+            {
+              sid: sid
+            });
+          thiz.pingTimer = setInterval(thiz.ping, 2000);
+        };
+        thiz.sock.onerror = function(error)
+        {
+          throw JSON.stringify(error);
+        };
+        thiz.sock.onmessage = function(e)
+        {
+          console.log(e.data);
+        };
+        thiz.sock.onclose = function()
+        {
+          if(thiz.pingTimer != 0)
+            clearInterval(thiz.pingtimer);
+          thiz.sock = null;
+        };
       },
       error: function(xhr, err)
       {
@@ -90,5 +68,10 @@ session = function()
       },
       dataType: 'jsonp'
     });
-  }
-};
+  };
+  this.close = function()
+  {
+    if(this.sock != null)
+      this.sock.close();
+  };
+}
