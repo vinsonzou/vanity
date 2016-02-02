@@ -63,7 +63,7 @@ function session()
         {
           console.log('closed');
           if(thiz.pingTimer != 0)
-            clearInterval(thiz.pingtimer);
+            clearInterval(thiz.pingTimer);
           thiz.sock = null;
         };
       },
