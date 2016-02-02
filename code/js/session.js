@@ -49,7 +49,7 @@ function session()
             {
               sid: sid
             });
-          thiz.pingTimer = setInterval(thiz.ping, 2000);
+          thiz.pingTimer = setInterval(thiz.ping, 5000);
         };
         thiz.sock.onerror = function(error)
         {
