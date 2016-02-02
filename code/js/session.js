@@ -49,7 +49,7 @@ function session()
             {
               sid: sid
             });
-          thiz.pingTimer = setInterval(thiz.ping, 5000);
+          thiz.pingTimer = setInterval(thiz.ping, 15000);
         };
         thiz.sock.onerror = function(error)
         {
@@ -61,6 +61,7 @@ function session()
         };
         thiz.sock.onclose = function()
         {
+          console.log('closed');
           if(thiz.pingTimer != 0)
             clearInterval(thiz.pingtimer);
           thiz.sock = null;
