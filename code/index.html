@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>vanity</title>
+  <script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>
+  <script type="text/javascript" src="js/signup.js"></script>
+  <script type="text/javascript" src="js/session.js"></script>
+  <script type="text/javascript" src="js/play.js"></script>
+  <script type="text/javascript">
+    var sess = new session();
+  </script>
+</head>
+<body>
+<h3>填写账号和密码用于注册或登录</h3>
+<p>账号: <input type="text" name="name"/> 密码: <input type="password" name="pass"/></p>
+<p>
+  <button onclick="signup();">注册新账号</button>
+  <button onclick="sess.connect();">连接/登录</button>
+  <button onclick="sess.close();">断开连接</button>
+</p>
+<h3>功能</h3>
+<p><button onclick="play.match(sess);">快速匹配</button></p>
+<p>
+  <input type="radio" value="1001" name="heroid" id="heroid1001" checked="checked"/><label for="heroid1001">大兵</label>
+  <input type="radio" value="1002" name="heroid" id="heroid1002"/><label for="heroid1002">中兵</label>
+  <input type="radio" value="1003" name="heroid" id="heroid1003"/><label for="heroid1003">小兵</label>
+  <button onclick="play.send(sess);">派兵上阵</button>
+</p>
+</body>
+</html>
