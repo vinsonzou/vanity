@@ -1,7 +1,5 @@
 function signup()
 {
-  var gate = 'http://gate.weiyouba.cn:1996/c/sign/signup';
-
   var name = $('input[name="name"]').val();
   var pass = $('input[name="pass"]').val();
   if(name == '' || pass == '')

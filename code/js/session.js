@@ -23,9 +23,6 @@ function session()
   };
   this.connect = function()
   {
-    var gate = 'http://gate.weiyouba.cn:1996/c/sign/signin';
-    var host = 'ws://s1.weiyouba.cn:1999/s';
-
     var name = $('input[name="name"]').val();
     var pass = $('input[name="pass"]').val();
     if(name == '' || pass == '')
